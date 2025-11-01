@@ -1,0 +1,46 @@
+/* 🌸 General Page Style */
+body {
+  background-color: #f4f6f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 🏠 Navbar */
+.navbar {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 🧍‍♀️ User Cards */
+.card {
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 🔘 Button */
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* 💖 Footer */
+footer {
+  background-color: #212529;
+  color: white;
+  text-align: center;
+  padding: 12px 0;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
