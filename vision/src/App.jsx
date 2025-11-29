@@ -98,36 +98,77 @@ function App() {
   const [supportRequests, setSupportRequests] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
+useEffect(() => {
+  if (activeSection === "chat") {
+    // Prevent duplicate script loading
+    const existing = document.getElementById("noupe-script");
+    if (existing) return;
+
+    const script = document.createElement("script");
+    script.src = "https://www.noupe.com/embed/019acec8c5da71fbb53af7c328bce7e1135e.js";
+    script.id = "noupe-script";
+    script.async = true;
+
+    document.body.appendChild(script);
+  }
+}, [activeSection]);
 
   /* -------------------- SIGNUP -------------------- */
   const handleSignup = (e) => {
-    e.preventDefault();
-    const user = {
-      username: e.target.username.value,
-      password: e.target.password.value,
-      role: e.target.role.value,
-      joinedPrograms: []
-    };
-    setCurrentUser(user);
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    setActiveSection("home");
+  e.preventDefault();
+
+  const username = e.target.username.value.trim();
+  const password = e.target.password.value.trim();
+  const role = e.target.role.value;
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  // CHECK IF USER ALREADY EXISTS
+  if (users.some((u) => u.username === username)) {
+    alert("User already exists!");
+    return;
+  }
+
+  // CREATE NEW USER
+  const newUser = {
+    username,
+    password,
+    role,
+    joinedPrograms: []
   };
+
+  // SAVE ALL USERS
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Account created! Please login.");
+  setIsSignup(false);  // go back to login
+};
+
 
   /* -------------------- LOGIN -------------------- */
   const handleLogin = (e) => {
-    e.preventDefault();
-    const username = e.target.username.value;
-    const password = e.target.password.value;
+  e.preventDefault();
 
-    const saved = JSON.parse(localStorage.getItem("currentUser"));
+  const username = e.target.username.value;
+  const password = e.target.password.value;
 
-    if (saved && saved.username === username && saved.password === password) {
-      setCurrentUser(saved);
-      setActiveSection("home");
-    } else {
-      alert("Incorrect username or password!");
-    }
-  };
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const foundUser = users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (!foundUser) {
+    alert("Incorrect username or password!");
+    return;
+  }
+
+  setCurrentUser(foundUser);
+  localStorage.setItem("currentUser", JSON.stringify(foundUser));
+  setActiveSection("home");
+};
+
 
   const logout = () => {
     setCurrentUser(null);
@@ -404,30 +445,55 @@ function App() {
         </section>
       )}
 
-      {/* CHATBOT */}
       {currentUser && activeSection === "chat" && (
-        <section>
-          <h2 className="page-title"><FaRobot /> Chat AI</h2>
+  <section className="chat-ai-container">
 
-          <div id="chatBox">
-            <div id="chatMessages">
-              {chatMessages.map((m, i) => (
-                <div key={i} className={`msg ${m.type}`}>{m.text}</div>
-              ))}
-            </div>
+    {/* HERO SECTION */}
+    <div className="chat-ai-hero">
+      <h2><FaRobot /> Wellness AI Companion</h2>
+      <p>
+        Your personal mental wellness assistant 🤖💚  
+        Ask anything about stress, focus, motivation, or health.  
+        I'm here to support you anytime.
+      </p>
+    </div>
 
-            <input
-              type="text"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Type a message..."
-            />
+    {/* FEATURE NAVIGATION */}
+    <div className="chat-ai-features">
+      <div className="feature-card">
+        <h4>💬 Smart Answers</h4>
+        <p>Ask wellness-related questions and get instant guidance.</p>
+      </div>
+      <div className="feature-card">
+        <h4>🧠 Mental Support</h4>
+        <p>Helpful tips to calm your mind and manage stress.</p>
+      </div>
+      <div className="feature-card">
+        <h4>📘 Study Help</h4>
+        <p>Focus tips, productivity hacks, and motivation boosts.</p>
+      </div>
+    </div>
 
-            <button onClick={sendMessage}>Send</button>
-          </div>
-        </section>
-      )}
+    {/* WELLNESS TIPS */}
+    <div className="wellness-tips">
+      <h3>🌱 Quick Wellness Tips</h3>
+      <ul>
+        <li>⭐ Take 3 deep breaths before starting any task.</li>
+        <li>⭐ Drink water every 30 minutes to stay alert.</li>
+        <li>⭐ Stretch your neck & shoulders every hour.</li>
+        <li>⭐ Avoid screens 20 mins before sleep.</li>
+      </ul>
+    </div>
+
+    {/* NOUPE CHATBOT */}
+    <div className="chatbot-center">
+  <div id="noupe-chat-widget"></div>
+</div>
+
+
+  </section>
+)}
+
 
       {/* ADMIN */}
       {currentUser && currentUser.role === "admin" && activeSection === "admin" && (
