@@ -5,6 +5,8 @@ import img from "./assets/img.jpg";
 import MazeGame from "./MazeGame";
 import DinoGame from "./DinoGame";
 import TicTacToe from "./TicTacToe";
+import QuizComponent from "./QuizComponent";
+
 
 function App() {
   /* -------------------- STATES -------------------- */
@@ -32,6 +34,18 @@ function App() {
       description: "A simple guide to starting meditation."
     }
   ]);
+  const [quizQuestions, setQuizQuestions] = useState([
+  {
+    question: "What is the best way to reduce stress quickly?",
+    options: ["Deep breathing", "Scrolling Instagram", "Skipping meals"],
+    answer: "Deep breathing"
+  },
+  {
+    question: "How many hours of sleep should a student get?",
+    options: ["3–4", "5–6", "7–9"],
+    answer: "7–9"
+  }
+]);
 
   const [programs, setPrograms] = useState([
     {
@@ -265,9 +279,14 @@ function App() {
                 <button onClick={() => setActiveSection("support")}>Support</button>
                 <button onClick={() => setActiveSection("chat")}>Chat AI</button>
                 <button onClick={() => setActiveSection("games")}>Stress Free Games</button>
+                <button onClick={() => setActiveSection("quiz")}>Wellness Quiz</button>
               </>
             )}
-
+      {currentUser && activeSection === "quiz" && currentUser.role === "student" && (
+  <section className="quiz-page">
+    <QuizComponent />
+  </section>
+)}
             {/* ADMIN ONLY NAV */}
             {currentUser.role === "admin" && (
               <>
