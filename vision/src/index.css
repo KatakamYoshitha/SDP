@@ -672,3 +672,28 @@ section {
 .ttt-result button:hover {
   background: #45a049;
 }
+.reply-box {
+  padding: 10px;
+  background: #e8f6ff;
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.danger-btn {
+  background: #ff4949;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+.danger-btn:hover {
+  background: #e04343;
+}
+.card textarea {
+  width: 100%;
+  height: 60px;
+  margin-top: 6px;
+}
