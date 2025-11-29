@@ -1,48 +1,225 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { FaHeartbeat, FaBookOpen, FaBrain, FaRobot, FaSignOutAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 import "./index.css";
+import img from "./assets/img.jpg";
 
 function App() {
+  /* -------------------- STATES -------------------- */
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null
   );
   const [activeSection, setActiveSection] = useState(currentUser ? "home" : "login");
-  const [resources, setResources] = useState(JSON.parse(localStorage.getItem("resources")) || []);
-  const [programs, setPrograms] = useState(
-    JSON.parse(localStorage.getItem("programs")) || [
-      { name: "Mindful Breathing", start: "2025-11-10", description: "Relax with guided breathing exercises." },
-      { name: "Yoga for Focus", start: "2025-11-15", description: "Stretch & build calmness for better focus." },
-      { name: "Healthy Eating Basics", start: "2025-11-20", description: "Learn how food affects your mood & energy." },
-    ]
-  );
-  const [articles, setArticles] = useState(JSON.parse(localStorage.getItem("articles")) || []);
-  const [supportRequests, setSupportRequests] = useState(JSON.parse(localStorage.getItem("supportRequests")) || []);
+  const [isSignup, setIsSignup] = useState(false);
+
+  const [resources, setResources] = useState([
+    {
+      title: "Mindful Breathing",
+      category: "Mental Health",
+      description: "Deep breathing to reduce anxiety and calm your mind."
+    },
+    {
+      title: "Healthy Eating",
+      category: "Nutrition",
+      description: "Learn the basics of a healthy diet and energy-boosting foods."
+    },
+    {
+      title: "Meditation Basics",
+      category: "Mindfulness",
+      description: "A simple guide to starting meditation."
+    }
+  ]);
+
+ const [programs, setPrograms] = useState([
+  {
+    name: "Mindful Breathing Workshop",
+    start: "2025-11-10",
+    description: "Learn grounding and deep breathing techniques."
+  },
+  {
+    name: "Yoga for Mental Clarity",
+    start: "2025-11-15",
+    description: "Gentle yoga to reduce anxiety and increase focus."
+  },
+  {
+    name: "Nutrition for Brain Health",
+    start: "2025-11-20",
+    description: "Understand how food influences mood and energy."
+  },
+  {
+    name: "Overcoming Exam Stress",
+    start: "2025-12-01",
+    description: "Improve emotional resilience before exams."
+  },
+  {
+    name: "Sleep Reset & Wellness",
+    start: "2025-12-05",
+    description: "Fix your sleep cycle with science-backed techniques."
+  },
+  {
+    name: "Art Therapy Expression",
+    start: "2025-12-10",
+    description: "Use colors, drawing and creativity to release stress."
+  },
+  {
+    name: "Walk & Talk Outdoor Therapy",
+    start: "2025-12-15",
+    description: "Improve mental clarity through nature walks."
+  },
+  {
+    name: "Digital Detox Challenge",
+    start: "2025-12-18",
+    description: "Reduce screen time and improve overall wellness."
+  },
+  {
+    name: "Positive Psychology Session",
+    start: "2025-12-22",
+    description: "Practice gratitude and cognitive reframing."
+  },
+  {
+    name: "Time-Management Mastery",
+    start: "2025-12-25",
+    description: "Learn planning techniques to reduce academic stress."
+  }
+]);
+
+
+  const [articles, setArticles] = useState([
+    {
+      title: "5 Tips to Manage Stress",
+      content: "Practice deep breathing, take breaks, hydrate and sleep well."
+    },
+    {
+      title: "Fix Your Sleep Cycle",
+      content: "Avoid screens before bed & keep a consistent routine."
+    }
+  ]);
+
+  const [supportRequests, setSupportRequests] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
 
-  useEffect(() => {
-    localStorage.setItem("resources", JSON.stringify(resources));
-    localStorage.setItem("programs", JSON.stringify(programs));
-    localStorage.setItem("articles", JSON.stringify(articles));
-    localStorage.setItem("supportRequests", JSON.stringify(supportRequests));
-  }, [resources, programs, articles, supportRequests]);
-
-  const handleLogin = (e) => {
+  /* -------------------- SIGNUP -------------------- */
+  const handleSignup = (e) => {
     e.preventDefault();
-    const username = e.target.username.value;
-    const role = e.target.role.value;
-    const user = { username, role, joinedPrograms: [] };
+    const user = {
+      username: e.target.username.value,
+      password: e.target.password.value,
+      role: e.target.role.value,
+      joinedPrograms: []
+    };
     setCurrentUser(user);
     localStorage.setItem("currentUser", JSON.stringify(user));
     setActiveSection("home");
   };
 
+  /* -------------------- LOGIN -------------------- */
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
+    const saved = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (saved && saved.username === username && saved.password === password) {
+      setCurrentUser(saved);
+      setActiveSection("home");
+    } else {
+      alert("Incorrect username or password!");
+    }
+  };
+
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
+    setActiveSection("login");
   };
 
+  /* -------------------- CHATBOT LOGIC -------------------- */
+  const getBotReply = (msg) => {
+    msg = msg.toLowerCase();
+
+    if (/(hi|hello|hey|yo)/.test(msg)) {
+      return "Hello! 🌼 How are you feeling today?";
+    }
+
+    if (msg.includes("how are you")) {
+      return "I'm feeling great 💛 I'm here for you. How can I help?";
+    }
+
+    if (msg.includes("stress")) {
+      return "Stress is tough 💛 Try inhaling for 4 seconds, holding for 4, then exhaling for 6.";
+    }
+
+    if (msg.includes("sleep")) {
+      return "Good sleep is important 😴 Try avoiding screens 30 minutes before bed.";
+    }
+
+    if (msg.includes("sad") || msg.includes("depress")) {
+      return "I’m really sorry you're feeling this way 💛 You matter. Want to talk?";
+    }
+
+    if (msg.includes("anxiety")) {
+      return "Try grounding: Name 5 things you see, 4 things you feel, 3 you hear 💙";
+    }
+
+    if (msg.includes("study") || msg.includes("focus")) {
+      return "Try the Pomodoro method ⏳ 25 mins study → 5 min break.";
+    }
+
+    return "I'm here for you 🌿 Tell me more.";
+  };
+
+  const sendMessage = () => {
+    if (!chatInput.trim()) return;
+
+    const userMsg = { text: chatInput, type: "user" };
+    setChatMessages((prev) => [...prev, userMsg]);
+
+    const reply = getBotReply(chatInput);
+
+    setTimeout(() => {
+      setChatMessages((prev) => [...prev, { text: reply, type: "bot" }]);
+    }, 600);
+
+    setChatInput("");
+  };
+
+  /* -------------------- PROGRAMS -------------------- */
+  const joinProgram = (index) => {
+    const prog = programs[index];
+
+    if (!currentUser.joinedPrograms.some((p) => p.name === prog.name)) {
+      const updatedUser = {
+        ...currentUser,
+        joinedPrograms: [...currentUser.joinedPrograms, { ...prog, completed: false }],
+      };
+      setCurrentUser(updatedUser);
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+    }
+  };
+
+  const completeProgram = (name) => {
+    const updatedUser = {
+      ...currentUser,
+      joinedPrograms: currentUser.joinedPrograms.map((p) =>
+        p.name === name ? { ...p, completed: true } : p
+      ),
+    };
+    setCurrentUser(updatedUser);
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+  };
+
+  /* -------------------- SUPPORT -------------------- */
+  const handleSupport = (e) => {
+    e.preventDefault();
+    const msg = e.target.supportMessage.value;
+    const newReq = { user: currentUser.username, message: msg, status: "pending" };
+    setSupportRequests([...supportRequests, newReq]);
+    e.target.reset();
+  };
+
+  /* -------------------- ADMIN ADDING -------------------- */
   const addResource = (e) => {
     e.preventDefault();
     const newRes = {
@@ -67,70 +244,22 @@ function App() {
 
   const addArticle = (e) => {
     e.preventDefault();
-    const newArticle = {
+    const newA = {
       title: e.target.articleTitle.value,
       content: e.target.articleContent.value,
     };
-    setArticles([...articles, newArticle]);
+    setArticles([...articles, newA]);
     e.target.reset();
   };
 
-  const joinProgram = (index) => {
-    const prog = programs[index];
-    if (!currentUser.joinedPrograms.some((p) => p.name === prog.name)) {
-      const updatedUser = {
-        ...currentUser,
-        joinedPrograms: [...currentUser.joinedPrograms, { ...prog, completed: false }],
-      };
-      setCurrentUser(updatedUser);
-      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-      alert(`You joined ${prog.name}`);
-    }
-  };
-
-  const completeProgram = (name) => {
-    const updatedUser = {
-      ...currentUser,
-      joinedPrograms: currentUser.joinedPrograms.map((p) =>
-        p.name === name ? { ...p, completed: true } : p
-      ),
-    };
-    setCurrentUser(updatedUser);
-    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-  };
-
-  const handleSupport = (e) => {
-    e.preventDefault();
-    const msg = e.target.supportMessage.value;
-    const newReq = { user: currentUser.username, message: msg, status: "pending" };
-    setSupportRequests([...supportRequests, newReq]);
-    e.target.reset();
-  };
-
-  const sendMessage = () => {
-    if (!chatInput.trim()) return;
-    const userMsg = { text: chatInput, type: "user" };
-    setChatMessages([...chatMessages, userMsg]);
-    setChatInput("");
-    setTimeout(() => {
-      const botReply = getBotReply(chatInput);
-      setChatMessages((prev) => [...prev, { text: botReply, type: "bot" }]);
-    }, 600);
-  };
-
-  const getBotReply = (msg) => {
-    msg = msg.toLowerCase();
-    if (msg.includes("stress")) return "Try deep breathing: inhale 4s, hold 4s, exhale 6s 🌿";
-    if (msg.includes("sleep")) return "Aim for 7–8 hours of sleep. Avoid screens before bed 😴";
-    if (msg.includes("anxiety")) return "Ground yourself: focus on 5 things you see, 4 you feel, 3 you hear 💙";
-    if (msg.includes("hello") || msg.includes("hi")) return "Hello! I’m your wellness companion 🤖 How are you feeling today?";
-    return "I'm here for you 💖 Remember to take breaks and breathe.";
-  };
-
+  /* -------------------- UI RENDERING -------------------- */
   return (
     <div>
+
+      {/* HEADER */}
       <header>
         <h1><FaHeartbeat /> Student Health & Wellness <FaBrain /></h1>
+
         {currentUser && (
           <nav>
             <button onClick={() => setActiveSection("home")}>Home</button>
@@ -139,166 +268,207 @@ function App() {
             <button onClick={() => setActiveSection("progress")}>Progress</button>
             <button onClick={() => setActiveSection("support")}>Support</button>
             <button onClick={() => setActiveSection("chat")}>Chat AI</button>
+
             {currentUser.role === "admin" && (
               <button onClick={() => setActiveSection("admin")}>Admin</button>
             )}
+
             <button onClick={logout}><FaSignOutAlt /> Logout</button>
           </nav>
         )}
       </header>
 
-      {!currentUser && activeSection === "login" && (
-        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h2>Login to Wellness Portal 🌸</h2>
-          <form onSubmit={handleLogin}>
-            <input type="text" name="username" placeholder="Enter username" required />
-            <select name="role">
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
-            </select>
-            <button type="submit">Login</button>
-          </form>
-        </motion.section>
+      {/* LOGIN + SIGNUP */}
+      {!currentUser && (
+        <div className="auth-wrapper">
+          <div className="auth-card">
+
+            <div className="auth-left">
+              <img src={img} alt="Wellness" />
+            </div>
+
+            <div className="auth-right">
+              <h2 className="auth-title">{isSignup ? "Create Account ✨" : "Login"}</h2>
+
+              <form onSubmit={isSignup ? handleSignup : handleLogin} className="auth-form">
+                <label>Username</label>
+                <input name="username" type="text" required />
+
+                <label>Password</label>
+                <input name="password" type="password" required />
+
+                {isSignup && (
+                  <>
+                    <label>Role</label>
+                    <select name="role">
+                      <option value="student">Student</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </>
+                )}
+
+                <button className="auth-btn" type="submit">
+                  {isSignup ? "Create Account" : "Log In"}
+                </button>
+              </form>
+
+              <p className="switch-text">
+                {isSignup ? (
+                  <>Already have an account? <span className="switch-link" onClick={() => setIsSignup(false)}>Login</span></>
+                ) : (
+                  <>Don't have an account? <span className="switch-link" onClick={() => setIsSignup(true)}>Sign Up</span></>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
 
+      {/* HOME */}
       {currentUser && activeSection === "home" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2>Welcome, {currentUser.username}! 🌼</h2>
-          <h3>Featured Resources</h3>
-          {resources.length ? (
-            resources.map((r, i) => (
-              <div key={i} className="card">
-                <h4>{r.title}</h4>
-                <p><b>{r.category}</b> - {r.description}</p>
-              </div>
-            ))
-          ) : (
-            <p>No resources yet.</p>
-          )}
-        </motion.section>
+        <section>
+          <h2 className="welcome-text">Welcome, {currentUser.username}! 🌼</h2>
+          <h3 className="feature-title">Featured Resources</h3>
+
+          {resources.map((r, i) => (
+            <div key={i} className="card">
+              <h4>{r.title}</h4>
+              <p><b>{r.category}</b> — {r.description}</p>
+            </div>
+          ))}
+        </section>
       )}
 
+      {/* SESSIONS */}
       {currentUser && activeSection === "sessions" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2>Upcoming Wellness Sessions 💡</h2>
+        <section>
+          <h2 className="page-title">Sessions 💡</h2>
+
           {programs.map((p, i) => (
             <div key={i} className="card">
               <h4>{p.name}</h4>
               <p>Date: {p.start}</p>
               <p>{p.description}</p>
+
               {currentUser.role === "student" && (
-                <button className="btn" onClick={() => joinProgram(i)}>Join</button>
+                <button onClick={() => joinProgram(i)}>Join</button>
               )}
             </div>
           ))}
-        </motion.section>
+        </section>
       )}
 
+      {/* ARTICLES */}
       {currentUser && activeSection === "articles" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2><FaBookOpen /> Wellness Articles & Books</h2>
-          {articles.length ? (
-            articles.map((a, i) => (
-              <div key={i} className="card">
-                <h4>{a.title}</h4>
-                <p>{a.content}</p>
-              </div>
-            ))
-          ) : (
-            <p>No articles yet.</p>
-          )}
-        </motion.section>
+        <section>
+          <h2 className="page-title"><FaBookOpen /> Articles</h2>
+
+          {articles.map((a, i) => (
+            <div key={i} className="card">
+              <h4>{a.title}</h4>
+              <p>{a.content}</p>
+            </div>
+          ))}
+        </section>
       )}
 
+      {/* PROGRESS */}
       {currentUser && activeSection === "progress" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2>My Progress 🌟</h2>
-          {currentUser.joinedPrograms.length ? (
-            currentUser.joinedPrograms.map((p, i) => (
-              <div key={i} className="card">
-                <h4>{p.name}</h4>
-                <p>Status: {p.completed ? "✅ Completed" : "⏳ In Progress"}</p>
-                {!p.completed && (
-                  <button className="btn" onClick={() => completeProgram(p.name)}>Mark Completed</button>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>No sessions joined.</p>
-          )}
-        </motion.section>
+        <section>
+          <h2 className="page-title">My Progress 🌟</h2>
+
+          {currentUser.joinedPrograms.length === 0 && <p>No sessions joined yet.</p>}
+
+          {currentUser.joinedPrograms.map((p, i) => (
+            <div key={i} className="card">
+              <h4>{p.name}</h4>
+              <p>Status: {p.completed ? "Completed ✔️" : "In Progress ⏳"}</p>
+
+              {!p.completed && (
+                <button onClick={() => completeProgram(p.name)}>Mark Completed</button>
+              )}
+            </div>
+          ))}
+        </section>
       )}
 
+      {/* SUPPORT */}
       {currentUser && activeSection === "support" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2>Need Support? 💌</h2>
+        <section>
+          <h2 className="page-title">Support 💌</h2>
+
           <form onSubmit={handleSupport}>
-            <textarea name="supportMessage" placeholder="Describe your concern..." required />
+            <textarea name="supportMessage" required placeholder="Describe your concern..." />
             <button type="submit">Submit</button>
           </form>
-        </motion.section>
+        </section>
       )}
 
+      {/* CHATBOT */}
       {currentUser && activeSection === "chat" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2><FaRobot /> Chat with AI</h2>
+        <section>
+          <h2 className="page-title"><FaRobot /> Chat AI</h2>
+
           <div id="chatBox">
             <div id="chatMessages">
               {chatMessages.map((m, i) => (
                 <div key={i} className={`msg ${m.type}`}>{m.text}</div>
               ))}
             </div>
+
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Type your message..."
-              onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              placeholder="Type a message..."
             />
+
             <button onClick={sendMessage}>Send</button>
           </div>
-        </motion.section>
+        </section>
       )}
 
+      {/* ADMIN */}
       {currentUser && currentUser.role === "admin" && activeSection === "admin" && (
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2>Admin Panel 🛠️</h2>
+        <section>
+          <h2 className="page-title">Admin Panel 🛠️</h2>
 
-          <h3>Add Resource</h3>
+          <h3 className="feature-title">Add Resource</h3>
           <form onSubmit={addResource}>
-            <input type="text" name="resourceTitle" placeholder="Title" required />
+            <input name="resourceTitle" placeholder="Resource Title" required />
             <select name="resourceCategory">
               <option value="Mental Health">Mental Health</option>
               <option value="Fitness">Fitness</option>
               <option value="Nutrition">Nutrition</option>
             </select>
-            <textarea name="resourceDesc" placeholder="Description" required />
+            <textarea name="resourceDesc" required placeholder="Description" />
             <button type="submit">Add Resource</button>
           </form>
 
-          <h3>Add Session</h3>
+          <h3 className="feature-title">Add Session</h3>
           <form onSubmit={addProgram}>
-            <input type="text" name="programName" placeholder="Session Name" required />
-            <input type="date" name="startDate" required />
-            <textarea name="programDesc" placeholder="Description" required />
+            <input name="programName" placeholder="Session Name" required />
+            <input name="startDate" type="date" required />
+            <textarea name="programDesc" required placeholder="Description" />
             <button type="submit">Add Session</button>
           </form>
 
-          <h3>Add Article</h3>
+          <h3 className="feature-title">Add Article</h3>
           <form onSubmit={addArticle}>
-            <input type="text" name="articleTitle" placeholder="Article Title" required />
-            <textarea name="articleContent" placeholder="Article Content" required />
-            <button type="submit">Publish Article</button>
+            <input name="articleTitle" placeholder="Title" required />
+            <textarea name="articleContent" placeholder="Content" required />
+            <button type="submit">Publish</button>
           </form>
 
-          <h3>Usage Metrics 📊</h3>
+          <h3 className="feature-title">Metrics 📊</h3>
           <div id="metrics">
             <p><b>Total Resources:</b> {resources.length}</p>
             <p><b>Total Sessions:</b> {programs.length}</p>
             <p><b>Total Articles:</b> {articles.length}</p>
             <p><b>Total Support Requests:</b> {supportRequests.length}</p>
           </div>
-        </motion.section>
+        </section>
       )}
     </div>
   );
