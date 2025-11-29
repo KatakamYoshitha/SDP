@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { FaHeartbeat, FaBookOpen, FaBrain, FaRobot, FaSignOutAlt } from "react-icons/fa";
-import { motion } from "framer-motion";
 import "./index.css";
 import img from "./assets/img.jpg";
+import MazeGame from "./MazeGame";
+import DinoGame from "./DinoGame";
+import TicTacToe from "./TicTacToe";
+
 
 function App() {
   /* -------------------- STATES -------------------- */
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("currentUser")) || null
   );
+
   const [activeSection, setActiveSection] = useState(currentUser ? "home" : "login");
   const [isSignup, setIsSignup] = useState(false);
 
@@ -30,200 +34,156 @@ function App() {
     }
   ]);
 
- const [programs, setPrograms] = useState([
+  const [programs, setPrograms] = useState([
+    {
+      name: "Mindful Breathing Workshop",
+      start: "2025-11-10",
+      description: "Learn grounding and deep breathing techniques."
+    },
+    {
+      name: "Yoga for Mental Clarity",
+      start: "2025-11-15",
+      description: "Gentle yoga to reduce anxiety and increase focus."
+    },
+    {
+      name: "Nutrition for Brain Health",
+      start: "2025-11-20",
+      description: "Understand how food influences mood and energy."
+    },
+    {
+      name: "Overcoming Exam Stress",
+      start: "2025-12-01",
+      description: "Improve emotional resilience before exams."
+    },
+    {
+      name: "Sleep Reset & Wellness",
+      start: "2025-12-05",
+      description: "Fix your sleep cycle with science-backed techniques."
+    },
+    {
+      name: "Art Therapy Expression",
+      start: "2025-12-10",
+      description: "Use creativity to release stress."
+    },
+    {
+      name: "Walk & Talk Outdoor Therapy",
+      start: "2025-12-15",
+      description: "Improve mental clarity through nature walks."
+    },
+    {
+      name: "Digital Detox Challenge",
+      start: "2025-12-18",
+      description: "Reduce screen time and improve wellness."
+    },
+    {
+      name: "Positive Psychology Session",
+      start: "2025-12-22",
+      description: "Practice gratitude and cognitive reframing."
+    },
+    {
+      name: "Time-Management Mastery",
+      start: "2025-12-25",
+      description: "Learn planning techniques to reduce academic stress."
+    }
+  ]);
+
+  const [articles, setArticles] = useState([
   {
-    name: "Mindful Breathing Workshop",
-    start: "2025-11-10",
-    description: "Learn grounding and deep breathing techniques."
+    title: "How to Reduce Exam Stress",
+    content: "Simple techniques to manage pressure and stay calm.",
+    link: "https://www.ucl.ac.uk/news/2017/apr/7-tips-help-you-cope-exam-stress"
   },
   {
-    name: "Yoga for Mental Clarity",
-    start: "2025-11-15",
-    description: "Gentle yoga to reduce anxiety and increase focus."
+    title: "Improve Your Sleep Naturally",
+    content: "Sleep cycles, habits, and science-backed tips.",
+    link: "https://www.sleepfoundation.org/sleep-hygiene"
   },
   {
-    name: "Nutrition for Brain Health",
-    start: "2025-11-20",
-    description: "Understand how food influences mood and energy."
+    title: "Benefits of Meditation",
+    content: "How meditation improves your mind and body.",
+    link: "https://www.mindful.org/meditation/mindfulness-getting-started/"
   },
   {
-    name: "Overcoming Exam Stress",
-    start: "2025-12-01",
-    description: "Improve emotional resilience before exams."
-  },
-  {
-    name: "Sleep Reset & Wellness",
-    start: "2025-12-05",
-    description: "Fix your sleep cycle with science-backed techniques."
-  },
-  {
-    name: "Art Therapy Expression",
-    start: "2025-12-10",
-    description: "Use colors, drawing and creativity to release stress."
-  },
-  {
-    name: "Walk & Talk Outdoor Therapy",
-    start: "2025-12-15",
-    description: "Improve mental clarity through nature walks."
-  },
-  {
-    name: "Digital Detox Challenge",
-    start: "2025-12-18",
-    description: "Reduce screen time and improve overall wellness."
-  },
-  {
-    name: "Positive Psychology Session",
-    start: "2025-12-22",
-    description: "Practice gratitude and cognitive reframing."
-  },
-  {
-    name: "Time-Management Mastery",
-    start: "2025-12-25",
-    description: "Learn planning techniques to reduce academic stress."
+    title: "Healthy Eating for Students",
+    content: "Nutrition tips for focus, energy, and mood.",
+    link: "https://www.nhs.uk/live-well/eat-well/food-and-drinks-for-studying/"
   }
 ]);
 
 
-  const [articles, setArticles] = useState([
-    {
-      title: "5 Tips to Manage Stress",
-      content: "Practice deep breathing, take breaks, hydrate and sleep well."
-    },
-    {
-      title: "Fix Your Sleep Cycle",
-      content: "Avoid screens before bed & keep a consistent routine."
-    }
-  ]);
-
   const [supportRequests, setSupportRequests] = useState([]);
-  const [chatMessages, setChatMessages] = useState([]);
-  const [chatInput, setChatInput] = useState("");
-useEffect(() => {
-  if (activeSection === "chat") {
-    // Prevent duplicate script loading
-    const existing = document.getElementById("noupe-script");
-    if (existing) return;
 
-    const script = document.createElement("script");
-    script.src = "https://www.noupe.com/embed/019acec8c5da71fbb53af7c328bce7e1135e.js";
-    script.id = "noupe-script";
-    script.async = true;
+  /* -------------------- CHATBOT SCRIPT -------------------- */
+  useEffect(() => {
+    if (activeSection === "chat") {
+      const existing = document.getElementById("noupe-script");
+      if (existing) return;
 
-    document.body.appendChild(script);
-  }
-}, [activeSection]);
+      const script = document.createElement("script");
+      script.src =
+        "https://www.noupe.com/embed/019acec8c5da71fbb53af7c328bce7e1135e.js";
+      script.id = "noupe-script";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, [activeSection]);
 
   /* -------------------- SIGNUP -------------------- */
   const handleSignup = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const username = e.target.username.value.trim();
-  const password = e.target.password.value.trim();
-  const role = e.target.role.value;
+    const username = e.target.username.value.trim();
+    const password = e.target.password.value.trim();
+    const role = e.target.role.value;
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-  // CHECK IF USER ALREADY EXISTS
-  if (users.some((u) => u.username === username)) {
-    alert("User already exists!");
-    return;
-  }
+    if (users.some((u) => u.username === username)) {
+      alert("User already exists!");
+      return;
+    }
 
-  // CREATE NEW USER
-  const newUser = {
-    username,
-    password,
-    role,
-    joinedPrograms: []
+    const newUser = {
+      username,
+      password,
+      role,
+      joinedPrograms: []
+    };
+
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Account created! Please login.");
+    setIsSignup(false);
   };
-
-  // SAVE ALL USERS
-  users.push(newUser);
-  localStorage.setItem("users", JSON.stringify(users));
-
-  alert("Account created! Please login.");
-  setIsSignup(false);  // go back to login
-};
-
 
   /* -------------------- LOGIN -------------------- */
   const handleLogin = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const username = e.target.username.value;
-  const password = e.target.password.value;
+    const username = e.target.username.value;
+    const password = e.target.password.value;
 
-  const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-  const foundUser = users.find(
-    (u) => u.username === username && u.password === password
-  );
+    const foundUser = users.find(
+      (u) => u.username === username && u.password === password
+    );
 
-  if (!foundUser) {
-    alert("Incorrect username or password!");
-    return;
-  }
+    if (!foundUser) {
+      alert("Incorrect username or password!");
+      return;
+    }
 
-  setCurrentUser(foundUser);
-  localStorage.setItem("currentUser", JSON.stringify(foundUser));
-  setActiveSection("home");
-};
-
+    setCurrentUser(foundUser);
+    localStorage.setItem("currentUser", JSON.stringify(foundUser));
+    setActiveSection("home");
+  };
 
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
     setActiveSection("login");
-  };
-
-  /* -------------------- CHATBOT LOGIC -------------------- */
-  const getBotReply = (msg) => {
-    msg = msg.toLowerCase();
-
-    if (/(hi|hello|hey|yo)/.test(msg)) {
-      return "Hello! 🌼 How are you feeling today?";
-    }
-
-    if (msg.includes("how are you")) {
-      return "I'm feeling great 💛 I'm here for you. How can I help?";
-    }
-
-    if (msg.includes("stress")) {
-      return "Stress is tough 💛 Try inhaling for 4 seconds, holding for 4, then exhaling for 6.";
-    }
-
-    if (msg.includes("sleep")) {
-      return "Good sleep is important 😴 Try avoiding screens 30 minutes before bed.";
-    }
-
-    if (msg.includes("sad") || msg.includes("depress")) {
-      return "I’m really sorry you're feeling this way 💛 You matter. Want to talk?";
-    }
-
-    if (msg.includes("anxiety")) {
-      return "Try grounding: Name 5 things you see, 4 things you feel, 3 you hear 💙";
-    }
-
-    if (msg.includes("study") || msg.includes("focus")) {
-      return "Try the Pomodoro method ⏳ 25 mins study → 5 min break.";
-    }
-
-    return "I'm here for you 🌿 Tell me more.";
-  };
-
-  const sendMessage = () => {
-    if (!chatInput.trim()) return;
-
-    const userMsg = { text: chatInput, type: "user" };
-    setChatMessages((prev) => [...prev, userMsg]);
-
-    const reply = getBotReply(chatInput);
-
-    setTimeout(() => {
-      setChatMessages((prev) => [...prev, { text: reply, type: "bot" }]);
-    }, 600);
-
-    setChatInput("");
   };
 
   /* -------------------- PROGRAMS -------------------- */
@@ -233,7 +193,7 @@ useEffect(() => {
     if (!currentUser.joinedPrograms.some((p) => p.name === prog.name)) {
       const updatedUser = {
         ...currentUser,
-        joinedPrograms: [...currentUser.joinedPrograms, { ...prog, completed: false }],
+        joinedPrograms: [...currentUser.joinedPrograms, { ...prog, completed: false }]
       };
       setCurrentUser(updatedUser);
       localStorage.setItem("currentUser", JSON.stringify(updatedUser));
@@ -245,7 +205,7 @@ useEffect(() => {
       ...currentUser,
       joinedPrograms: currentUser.joinedPrograms.map((p) =>
         p.name === name ? { ...p, completed: true } : p
-      ),
+      )
     };
     setCurrentUser(updatedUser);
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
@@ -266,7 +226,7 @@ useEffect(() => {
     const newRes = {
       title: e.target.resourceTitle.value,
       category: e.target.resourceCategory.value,
-      description: e.target.resourceDesc.value,
+      description: e.target.resourceDesc.value
     };
     setResources([...resources, newRes]);
     e.target.reset();
@@ -277,23 +237,28 @@ useEffect(() => {
     const newProg = {
       name: e.target.programName.value,
       start: e.target.startDate.value,
-      description: e.target.programDesc.value,
+      description: e.target.programDesc.value
     };
     setPrograms([...programs, newProg]);
     e.target.reset();
   };
 
   const addArticle = (e) => {
-    e.preventDefault();
-    const newA = {
-      title: e.target.articleTitle.value,
-      content: e.target.articleContent.value,
-    };
-    setArticles([...articles, newA]);
-    e.target.reset();
+  e.preventDefault();
+
+  const newA = {
+    title: e.target.articleTitle.value,
+    content: e.target.articleContent.value,
+    link: e.target.articleLink.value   // ← new field
   };
 
-  /* -------------------- UI RENDERING -------------------- */
+  setArticles([...articles, newA]);
+  localStorage.setItem("articles", JSON.stringify([...articles, newA]));
+  e.target.reset();
+};
+
+
+  /* -------------------- UI -------------------- */
   return (
     <div>
 
@@ -307,9 +272,17 @@ useEffect(() => {
             <button onClick={() => setActiveSection("sessions")}>Sessions</button>
             <button onClick={() => setActiveSection("articles")}>Articles</button>
             <button onClick={() => setActiveSection("progress")}>Progress</button>
-            <button onClick={() => setActiveSection("support")}>Support</button>
-            <button onClick={() => setActiveSection("chat")}>Chat AI</button>
 
+            {/* STUDENT ONLY */}
+            {currentUser.role === "student" && (
+              <>
+                <button onClick={() => setActiveSection("support")}>Support</button>
+                <button onClick={() => setActiveSection("chat")}>Chat AI</button>
+                <button onClick={() => setActiveSection("games")}>Stress Free Games</button>
+              </>
+            )}
+
+            {/* ADMIN ONLY */}
             {currentUser.role === "admin" && (
               <button onClick={() => setActiveSection("admin")}>Admin</button>
             )}
@@ -323,7 +296,6 @@ useEffect(() => {
       {!currentUser && (
         <div className="auth-wrapper">
           <div className="auth-card">
-
             <div className="auth-left">
               <img src={img} alt="Wellness" />
             </div>
@@ -401,17 +373,26 @@ useEffect(() => {
 
       {/* ARTICLES */}
       {currentUser && activeSection === "articles" && (
-        <section>
-          <h2 className="page-title"><FaBookOpen /> Articles</h2>
+  <section>
+    <h2 className="page-title"><FaBookOpen /> Wellness Articles</h2>
 
-          {articles.map((a, i) => (
-            <div key={i} className="card">
-              <h4>{a.title}</h4>
-              <p>{a.content}</p>
-            </div>
-          ))}
-        </section>
-      )}
+    {articles.map((a, i) => (
+      <div key={i} className="card">
+        <h3>{a.title}</h3>
+        <p>{a.content}</p>
+
+        <button
+          onClick={() => window.open(a.link, "_blank")}
+          className="read-btn"
+        >
+          Read Article
+        </button>
+      </div>
+    ))}
+  </section>
+)}
+
+
 
       {/* PROGRESS */}
       {currentUser && activeSection === "progress" && (
@@ -432,9 +413,38 @@ useEffect(() => {
           ))}
         </section>
       )}
+{currentUser && activeSection === "games" && (
+  <section className="games-menu">
+    <h2>🎮 Stress-Free Games</h2>
+    <p>Select a game to relax and refresh your mind!</p><br></br>
+
+    <button onClick={() => setActiveSection("maze")}>🧩 Maze Game</button><br></br><br></br>
+    <button onClick={() => setActiveSection("dino")}>🦖 Dino Runner</button><br></br><br></br>  
+    <button onClick={() => setActiveSection("tictactoe")}>⭕ Tic Tac Toe ❌</button>
+
+  </section>
+)}
+{currentUser && activeSection === "dino" && (
+  <section>
+    <DinoGame />
+  </section>
+)}
+{currentUser && activeSection === "tictactoe" && (
+  <section>
+    <TicTacToe />
+  </section>
+)}
+
+{currentUser && activeSection === "maze" && currentUser.role === "student" && (
+  <section className="maze-section">
+    <h2>🧩 Relaxing Maze Game</h2>
+    <p>Use arrow keys ↑ ↓ ← → to move the ball and reach the goal!</p>
+    <MazeGame />
+  </section>
+)}
 
       {/* SUPPORT */}
-      {currentUser && activeSection === "support" && (
+      {currentUser && activeSection === "support" && currentUser.role === "student" && (
         <section>
           <h2 className="page-title">Support 💌</h2>
 
@@ -445,55 +455,28 @@ useEffect(() => {
         </section>
       )}
 
-      {currentUser && activeSection === "chat" && (
-  <section className="chat-ai-container">
+      {/* CHAT AI */}
+      {currentUser && activeSection === "chat" && currentUser.role === "student" && (
+        <section className="chat-ai-container">
+          <div className="chat-ai-hero">
+            <h2><FaRobot /> Wellness AI Companion</h2>
+            <p>Your personal mental wellness assistant 🤖💚</p>
+          </div>
 
-    {/* HERO SECTION */}
-    <div className="chat-ai-hero">
-      <h2><FaRobot /> Wellness AI Companion</h2>
-      <p>
-        Your personal mental wellness assistant 🤖💚  
-        Ask anything about stress, focus, motivation, or health.  
-        I'm here to support you anytime.
-      </p>
-    </div>
+          <div className="chatbot-center">
+            <div id="noupe-chat-widget"></div>
+          </div>
+        </section>
+      )}
 
-    {/* FEATURE NAVIGATION */}
-    <div className="chat-ai-features">
-      <div className="feature-card">
-        <h4>💬 Smart Answers</h4>
-        <p>Ask wellness-related questions and get instant guidance.</p>
-      </div>
-      <div className="feature-card">
-        <h4>🧠 Mental Support</h4>
-        <p>Helpful tips to calm your mind and manage stress.</p>
-      </div>
-      <div className="feature-card">
-        <h4>📘 Study Help</h4>
-        <p>Focus tips, productivity hacks, and motivation boosts.</p>
-      </div>
-    </div>
-
-    {/* WELLNESS TIPS */}
-    <div className="wellness-tips">
-      <h3>🌱 Quick Wellness Tips</h3>
-      <ul>
-        <li>⭐ Take 3 deep breaths before starting any task.</li>
-        <li>⭐ Drink water every 30 minutes to stay alert.</li>
-        <li>⭐ Stretch your neck & shoulders every hour.</li>
-        <li>⭐ Avoid screens 20 mins before sleep.</li>
-      </ul>
-    </div>
-
-    {/* NOUPE CHATBOT */}
-    <div className="chatbot-center">
-  <div id="noupe-chat-widget"></div>
-</div>
-
-
-  </section>
-)}
-
+      {/* MAZE GAME */}
+      {currentUser && activeSection === "maze" && currentUser.role === "student" && (
+        <section className="maze-section">
+          <h2>🧩 Relaxing Maze Game</h2>
+          <p>Use arrow keys ↑ ↓ ← → to move the ball and reach the goal!</p>
+          <MazeGame />
+        </section>
+      )}
 
       {/* ADMIN */}
       {currentUser && currentUser.role === "admin" && activeSection === "admin" && (
@@ -521,11 +504,24 @@ useEffect(() => {
           </form>
 
           <h3 className="feature-title">Add Article</h3>
-          <form onSubmit={addArticle}>
-            <input name="articleTitle" placeholder="Title" required />
-            <textarea name="articleContent" placeholder="Content" required />
-            <button type="submit">Publish</button>
-          </form>
+<form onSubmit={addArticle}>
+  <input name="articleTitle" placeholder="Article Title" required />
+  
+  <textarea 
+    name="articleContent" 
+    placeholder="Short Description" 
+    required 
+  />
+
+  <input 
+    name="articleLink" 
+    placeholder="Article URL (https://...)" 
+    required 
+  />
+
+  <button type="submit">Publish Article</button>
+</form>
+
 
           <h3 className="feature-title">Metrics 📊</h3>
           <div id="metrics">

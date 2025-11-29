@@ -517,3 +517,158 @@ section {
     transform: translateY(0);
   }
 }
+.maze-section {
+  text-align: center;
+  padding: 20px;
+}
+
+.maze-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 35px);
+  grid-template-rows: repeat(10, 35px);
+  margin: 20px auto;
+  width: fit-content;
+  gap: 2px;
+}
+
+.maze-wall {
+  background: #345c63;
+  border-radius: 6px;
+}
+
+.maze-path {
+  background: #e4f5f2;
+  border-radius: 6px;
+}
+
+.maze-player {
+  background: #2ecc71;
+  border-radius: 50%;
+  animation: pulse 1s infinite ease-in-out;
+}
+
+.maze-goal {
+  background: gold;
+  border-radius: 50%;
+  box-shadow: 0 0 10px gold;
+}
+
+.maze-win {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2ecc71;
+  margin-bottom: 15px;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.dino-game {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.dino-title {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.dino-tip {
+  font-size: 14px;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+.game-box {
+  position: relative;
+  margin: 0 auto;
+  width: 500px;
+  height: 200px;
+  background: #f6f6f6;
+  border: 2px solid #ccc;
+  overflow: hidden;
+}
+
+.dino {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: black;
+  left: 50px;
+  border-radius: 5px;
+  transition: top 0.3s;
+}
+
+.cactus {
+  position: absolute;
+  width: 25px;
+  height: 50px;
+  background: green;
+  bottom: 0;
+}
+
+.score {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.game-over-box {
+  margin-top: 20px;
+}
+
+.game-over-box button {
+  padding: 10px 20px;
+  border: none;
+  background: #ff4d4d;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.game-over-box button:hover {
+  background: #e04343;
+}
+.ttt-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.ttt-board {
+  width: 300px;
+  height: 300px;
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.ttt-cell {
+  background: #f0f0f0;
+  border-radius: 10px;
+  font-size: 35px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ttt-cell:hover {
+  background: #e0e0e0;
+}
+
+.ttt-result button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.ttt-result button:hover {
+  background: #45a049;
+}
